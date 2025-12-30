@@ -19,6 +19,22 @@ Rscript benchmark.R <database_path> [threads] [daemons]
 - `threads` - (Optional) Number of DuckDB threads per daemon. If omitted, uses DuckDB's default.
 - `daemons` - (Optional) Number of mirai daemons for parallel query execution. Default: 1 (sequential).
 
+Running without arguments shows all thread × daemon combinations that would utilize all your CPU cores:
+
+```bash
+$ Rscript benchmark.R
+Usage: Rscript benchmark.R <database_path> [threads] [daemons]
+  threads: DuckDB threads per daemon (default: auto)
+  daemons: number of mirai daemons for parallel queries (default: 1, sequential)
+Example: Rscript benchmark.R /path/to/tpch.duckdb 4 8
+
+Detected 8 logical cores. Combinations using all cores:
+  8 threads × 1 daemon
+  4 threads × 2 daemons
+  2 threads × 4 daemons
+  1 thread × 8 daemons
+```
+
 ### Examples
 
 ```bash
