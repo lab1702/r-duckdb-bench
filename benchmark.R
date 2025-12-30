@@ -15,7 +15,7 @@ if (length(args) < 1) {
 
 db_path <- args[1]
 num_threads <- if (length(args) >= 2) as.integer(args[2]) else NULL
-if (is.na(num_threads)) num_threads <- NULL  # Treat "NA" as default
+if (is.na(num_threads)) num_threads <- NULL # Treat "NA" as default
 num_daemons <- if (length(args) >= 3) as.integer(args[3]) else 1L
 
 if (!is.null(num_threads) && num_threads < 1) {
@@ -80,8 +80,9 @@ cat("Submitting 22 queries to mirai daemons...\n\n")
 wall_start <- Sys.time()
 tasks <- lapply(1:22, function(q) {
   mirai(run_query(q, db_path, num_threads),
-        q = q, db_path = db_path, num_threads = num_threads,
-        run_query = run_query)
+    q = q, db_path = db_path, num_threads = num_threads,
+    run_query = run_query
+  )
 })
 
 # Collect results
