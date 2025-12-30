@@ -5,17 +5,30 @@
 
 args <- commandArgs(trailingOnly = TRUE)
 
+num_cores <- parallel::detectCores()
+
 if (length(args) < 1) {
   cat("Usage: Rscript benchmark.R <database_path> [threads] [daemons]\n")
   cat("  threads: DuckDB threads per daemon (default: auto)\n")
   cat("  daemons: number of mirai daemons for parallel queries (default: 1, sequential)\n")
-  cat("Example: Rscript benchmark.R /path/to/tpch.duckdb 4 8\n")
+  cat("Example: Rscript benchmark.R /path/to/tpch.duckdb 4 8\n\n")
+
+  # Show all thread × daemon combinations that use all cores
+  cat(sprintf("Detected %d logical cores. Combinations using all cores:\n", num_cores))
+  divisors <- which(num_cores %% seq_len(num_cores) == 0)
+  for (d in divisors) {
+    t <- num_cores / d
+    t_label <- if (t == 1) "thread" else "threads"
+    d_label <- if (d == 1) "daemon" else "daemons"
+    cat(sprintf("  %d %s × %d %s\n", t, t_label, d, d_label))
+  }
+  cat("\n")
   quit(status = 1)
 }
 
 db_path <- args[1]
 num_threads <- if (length(args) >= 2) as.integer(args[2]) else NULL
-if (is.na(num_threads)) num_threads <- NULL # Treat "NA" as default
+if (!is.null(num_threads) && is.na(num_threads)) num_threads <- NULL # Treat "NA" as default
 num_daemons <- if (length(args) >= 3) as.integer(args[3]) else 1L
 
 if (!is.null(num_threads) && num_threads < 1) {
