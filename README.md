@@ -8,6 +8,16 @@ Benchmark script for running TPCH queries on DuckDB with configurable thread cou
 - `duckdb` R package
 - `mirai` R package
 - A DuckDB database with TPCH data loaded
+- DuckDB `tpch` extension installed (required for `PRAGMA tpch()` queries)
+
+To install the tpch extension from R:
+
+```r
+library(duckdb)
+con <- dbConnect(duckdb())
+dbExecute(con, "INSTALL tpch")
+dbDisconnect(con, shutdown = TRUE)
+```
 
 ## Usage
 

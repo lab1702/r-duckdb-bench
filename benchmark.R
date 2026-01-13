@@ -102,6 +102,18 @@ tasks <- lapply(1:22, function(q) {
 results_list <- lapply(tasks, function(m) m[])
 wall_elapsed <- as.numeric(difftime(Sys.time(), wall_start, units = "secs"))
 
+# Check for errors in any task
+errors <- vapply(results_list, function(r) inherits(r, "errorValue"), logical(1))
+if (any(errors)) {
+  cat("Errors occurred in the following queries:\n")
+  for (i in which(errors)) {
+    err <- results_list[[i]]
+    msg <- if (inherits(err, "miraiError")) as.character(err) else as.character(err)
+    cat(sprintf("  Query %d: %s\n", i, msg))
+  }
+  quit(status = 1)
+}
+
 # Build results data frame
 results <- do.call(rbind, lapply(results_list, function(r) {
   data.frame(
